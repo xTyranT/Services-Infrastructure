@@ -8,10 +8,8 @@ RUN apt-get update -y && apt-get install wget -y \
 
 COPY tools/wp_setup.sh .
 
-RUN mkdir -p /run/php
-
 COPY conf/www.conf  /etc/php/7.4/fpm/pool.d/
 
-RUN chmod +x wp_setup.sh
+RUN chmod +x wp_setup.sh && mkdir -p /run/php
 
 CMD [ "./wp_setup.sh" ]
