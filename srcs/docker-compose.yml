@@ -1,20 +1,20 @@
 version: '3'
 services:
   mariadb:
-    build: /home/tyrant/Desktop/inception/srcs/requirements/mariadb
     container_name: mariadb
+    build: /home/tyrant/Desktop/inception/srcs/requirements/mariadb
     ports:
       - 3306
     env_file:
       - .env
     volumes:
-      - db_data:/home/kouferka/data/database
+      - db_data:/var/lib/mysql
     networks:
       - inception_network
   
   nginx:
-    build: /home/tyrant/Desktop/inception/srcs/requirements/nginx
     container_name: nginx
+    build: /home/tyrant/Desktop/inception/srcs/requirements/nginx
     ports:
       - "443:443"
     env_file:
@@ -22,13 +22,13 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - wp_data:/home/kouferka/data/wordpress
+      - wp_data:/wordpress
     networks:
       - inception_network
     
   wordpress:
-    build: /home/tyrant/Desktop/inception/srcs/requirements/wordpress
     container_name: wordpress
+    build: /home/tyrant/Desktop/inception/srcs/requirements/wordpress
     ports:
       - 9000
     env_file:
@@ -37,21 +37,45 @@ services:
       - mariadb
       - redis
     volumes:
-      - wp_data:/home/kouferka/data/wordpress
+      - wp_data:/wordpress
     networks:
       - inception_network
 
   redis:
-      build: /home/tyrant/Desktop/inception/srcs/requirements/bonus/redis
-      container_name: redis
-      ports:
-        - 6379
-      networks:
-        - inception_network
+    container_name: redis
+    build: /home/tyrant/Desktop/inception/srcs/requirements/bonus/redis
+    ports:
+      - 6379
+    networks:
+      - inception_network
+
+  ftp:
+    container_name: ftp
+    build: /home/tyrant/Desktop/inception/srcs/requirements/bonus/ftp
+    ports:
+      - 21
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    networks:
+      - inception_network
+    volumes:
+      - wp_data:/wordpress
 
 volumes:
-  db_data:
-  wp_data:
+    wp_data:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: /home/kouferka/data/wordpress
+    db_data:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: /home/kouferka/data/database
 
 networks:
   inception_network:

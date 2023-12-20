@@ -1,8 +1,9 @@
 all :
-	cd srcs && docker compose up
+	@cd srcs && docker compose up
 
 clean :
-	cd srcs && docker compose down
+	@cd srcs && docker compose down
 
 fclean : clean
-	docker volume rm $(docker volume ls | awk '{print $2}' | grep -v VOLUME)
+	@docker system prune --all
+	@docker volume rm $$(docker volume ls | awk '{print $$2}' | grep -v VOLUME)
