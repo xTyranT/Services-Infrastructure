@@ -2,7 +2,7 @@ version: '3'
 services:
   mariadb:
     container_name: mariadb
-    build: /home/tyrant/Desktop/inception/srcs/requirements/mariadb
+    build: ./requirements/mariadb
     ports:
       - 3306
     env_file:
@@ -15,7 +15,7 @@ services:
   
   nginx:
     container_name: nginx
-    build: /home/tyrant/Desktop/inception/srcs/requirements/nginx
+    build: ./requirements/nginx
     ports:
       - "443:443"
     env_file:
@@ -23,7 +23,7 @@ services:
     depends_on:
       - wordpress
     volumes:
-      - wp_data:/wordpress
+      - wp_data:/var/www/html
     networks:
       - inception_network
     restart: always
@@ -31,7 +31,7 @@ services:
     
   wordpress:
     container_name: wordpress
-    build: /home/tyrant/Desktop/inception/srcs/requirements/wordpress
+    build: ./requirements/wordpress
     ports:
       - 9000
     env_file:
@@ -40,14 +40,14 @@ services:
       - mariadb
       - redis
     volumes:
-      - wp_data:/wordpress
+      - wp_data:/var/www/html
     networks:
       - inception_network
     restart: always
 
   redis:
     container_name: redis
-    build: /home/tyrant/Desktop/inception/srcs/requirements/bonus/redis
+    build: ./requirements/bonus/redis
     ports:
       - 6379
     networks:
@@ -56,7 +56,7 @@ services:
 
   ftp:
     container_name: ftp
-    build: /home/tyrant/Desktop/inception/srcs/requirements/bonus/ftp
+    build: ./requirements/bonus/ftp
     ports:
       - 21
     env_file:
@@ -66,12 +66,12 @@ services:
     networks:
       - inception_network
     volumes:
-      - wp_data:/wordpress
+      - wp_data:/var/www/html
     restart: always
 
   adminer:
     container_name: adminer
-    build: /home/tyrant/Desktop/inception/srcs/requirements/bonus/adminer
+    build: ./requirements/bonus/adminer
     ports:
       - "8080:8080"
     env_file:
