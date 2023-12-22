@@ -82,6 +82,16 @@ services:
       - inception_network
     restart: always
 
+  webpage:
+    container_name: webpage
+    build: ./requirements/bonus/webpage
+    ports:
+      - "6969:6969"
+    networks:
+      - inception_network
+    restart: always
+
+
 volumes:
     wp_data:
       driver: local

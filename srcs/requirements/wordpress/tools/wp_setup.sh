@@ -30,11 +30,11 @@ else
     sed -i "52 s/^/define('FTP_PASS', '$WP_ADMIN_PWD');\n/" $ROOT_PATH/wp-config.php
     sed -i "52 s/^/define('FTP_HOST', 'ftp');\n/" $ROOT_PATH/wp-config.php
 
-fi
-    cd $ROOT_PATH
     wp core install --url=$WP_URL --title="WordPress" --admin_user=$WP_ADMIN \
     --admin_password=$WP_ADMIN_PWD --admin_email=$WP_ADMIN_EMAIL --allow-root
     wp user create $WP_USER $WP_USER_EMAIL --role=editor --user_pass=$WP_USER_PWD --allow-root
+fi
+    cd $ROOT_PATH
     wp plugin install redis-cache --activate --allow-root
     wp redis enable --allow-root
 
