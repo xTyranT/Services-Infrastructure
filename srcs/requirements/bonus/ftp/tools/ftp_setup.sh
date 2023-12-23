@@ -16,7 +16,7 @@ pasv_max_port=45000
 userlist_enable=YES
 userlist_file=/etc/vsftpd.userlist
 userlist_deny=NO
-local_root=/wordpress
+local_root=/var/www/html
 " > /etc/vsftpd.conf
 
 adduser --disabled-password --gecos "" $WP_ADMIN

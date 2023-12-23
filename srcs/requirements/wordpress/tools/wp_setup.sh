@@ -23,9 +23,9 @@ else
     sed -i "39 s/^/define( 'WP_REDIS_HOST', 'redis' );\n/" $ROOT_PATH/wp-config.php
 
     sed -i "52 s/^/define('FS_METHOD', 'direct');\n/" $ROOT_PATH/wp-config.php
-    sed -i "52 s/^/define('FTP_BASE', '\/wordpress');\n/" $ROOT_PATH/wp-config.php
-    sed -i "52 s/^/define('FTP_CONTENT_DIR', '\/wordpress\/wp-content');\n/" $ROOT_PATH/wp-config.php
-    sed -i "52 s/^/define('FTP_PLUGIN_DIR ', '\/wordpress\/wp-content\/plugins');\n/" $ROOT_PATH/wp-config.php
+    sed -i "52 s/^/define('FTP_BASE', '\/var\/www\/html');\n/" $ROOT_PATH/wp-config.php
+    sed -i "52 s/^/define('FTP_CONTENT_DIR', '\/var\/www\/html\/wp-content');\n/" $ROOT_PATH/wp-config.php
+    sed -i "52 s/^/define('FTP_PLUGIN_DIR ', '\/var\/www\/html\/wp-content\/plugins');\n/" $ROOT_PATH/wp-config.php
     sed -i "52 s/^/define('FTP_USER', '$WP_ADMIN');\n/" $ROOT_PATH/wp-config.php
     sed -i "52 s/^/define('FTP_PASS', '$WP_ADMIN_PWD');\n/" $ROOT_PATH/wp-config.php
     sed -i "52 s/^/define('FTP_HOST', 'ftp');\n/" $ROOT_PATH/wp-config.php
