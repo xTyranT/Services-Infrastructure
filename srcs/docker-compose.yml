@@ -4,7 +4,7 @@ services:
     container_name: mariadb
     build: ./requirements/mariadb
     ports:
-      - 3306
+      - "3306:3306"
     env_file:
       - .env
     volumes:
@@ -91,6 +91,13 @@ services:
       - inception_network
     restart: always
 
+  netdata:
+    container_name: netdata
+    build: ./requirements/bonus/netdata
+    ports:
+      - "19999:19999"
+    networks:
+      - inception_network
 
 volumes:
     wp_data:
