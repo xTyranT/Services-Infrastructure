@@ -2,7 +2,7 @@ FROM debian:bullseye
 
 RUN apt-get update && apt-get install -y curl gcc make autoconf autoconf-archive autogen automake pkg-config
 
-RUN curl -Ss https://my-netdata.io/kickstart.sh | bash
+RUN curl -Ss https://get.netdata.cloud/kickstart.sh | bash
 
 EXPOSE 19999
 

@@ -1,103 +1,169 @@
-version: '3'
 services:
   mariadb:
     container_name: mariadb
+    image: mariadb
     build: ./requirements/mariadb
-    ports:
-      - "3306:3306"
+    expose:
+      - 3306
     env_file:
       - .env
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - inception_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    init: true
     restart: always
   
-  nginx:
-    container_name: nginx
-    build: ./requirements/nginx
-    ports:
-      - "443:443"
-    env_file:
-      - .env
-    depends_on:
-      - wordpress
-    volumes:
-      - wp_data:/var/www/html
-    networks:
-      - inception_network
-    restart: always
-
-    
-  wordpress:
-    container_name: wordpress
-    build: ./requirements/wordpress
-    ports:
-      - 9000
-    env_file:
-      - .env
-    depends_on:
-      - mariadb
-      - redis
-    volumes:
-      - wp_data:/var/www/html
-    networks:
-      - inception_network
-    restart: always
-
-  redis:
-    container_name: redis
-    build: ./requirements/bonus/redis
-    ports:
-      - 6379
-    networks:
-      - inception_network
-    restart: always
-
-  ftp:
-    container_name: ftp
-    build: ./requirements/bonus/ftp
-    ports:
-      - 21
-    env_file:
-      - .env
-    depends_on:
-      - wordpress
-    networks:
-      - inception_network
-    volumes:
-      - wp_data:/var/www/html
-    restart: always
-
   adminer:
     container_name: adminer
+    image: adminer
     build: ./requirements/bonus/adminer
     ports:
       - "8080:8080"
     env_file:
       - .env
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     networks:
       - inception_network
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f localhost:8080"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     restart: always
 
-  webpage:
-    container_name: webpage
-    build: ./requirements/bonus/webpage
-    ports:
-      - "6969:6969"
+  redis:
+    container_name: redis
+    image: redis
+    build: ./requirements/bonus/redis
+    expose:
+      - 6379
     networks:
       - inception_network
+    depends_on:
+      adminer:
+        condition: service_healthy
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: always
+    
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    build: ./requirements/wordpress
+    expose:
+      - 9000
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception_network
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm7.4 -t"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  ftp:
+    container_name: ftp
+    image: ftp
+    build: ./requirements/bonus/ftp
+    expose:
+      - 21
+    env_file:
+      - .env
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    networks:
+      - inception_network
+    volumes:
+      - wp_data:/var/www/html
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "vsftpd -v"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    depends_on:
+      ftp:
+        condition: service_healthy
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - inception_network
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f localhost:80"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     restart: always
 
   netdata:
     container_name: netdata
+    image: netdata
     build: ./requirements/bonus/netdata
     ports:
       - "19999:19999"
     networks:
       - inception_network
+    depends_on:
+      nginx:
+        condition: service_healthy
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f localhost:19999"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: always
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /:/host/root:ro,rslave
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /var/log:/host/var/log:ro
 
 volumes:
     wp_data:
@@ -112,6 +178,9 @@ volumes:
         type: none
         o: bind
         device: /home/kouferka/data/database
+    netdataconfig:
+    netdatalib:
+    netdatacache:
 
 networks:
   inception_network:

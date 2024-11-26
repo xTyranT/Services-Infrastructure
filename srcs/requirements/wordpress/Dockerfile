@@ -3,7 +3,7 @@ FROM debian:bullseye
 EXPOSE 9000
 
 RUN apt-get update -y && apt-get install wget -y \
-    && apt-get install php-mysql php7.4-fpm mariadb-client -y \
+    && apt-get install curl php-mysql php7.4-fpm mariadb-client -y \
     && wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 
 COPY tools/wp_setup.sh .
