@@ -1,10 +1,10 @@
 
-# Inception
+# Services-Infrastructure
 A Docker-based project to build and manage a fully containerized environment with isolated services including a database, web server, and WordPress instance.
 
 
 ## 🌟 Overview
-The Inception project is a key part of the 1337 curriculum, focusing on Docker and DevOps principles. The goal is to create a scalable, secure, and isolated multi-service application using Docker Compose. This project enhances your understanding of container orchestration, networking, and system architecture.
+The Services-Infrastructure project is a key part of the 1337 curriculum, focusing on Docker and DevOps principles. The goal is to create a scalable, secure, and isolated multi-service application using Docker Compose. This project enhances your understanding of container orchestration, networking, and system architecture.
 
 ## 🛠️ Features
 - **Nginx Reverse Proxy:** Securely routes HTTP(S) traffic to the appropriate services.
@@ -24,11 +24,11 @@ The Inception project is a key part of the 1337 curriculum, focusing on Docker a
 ### Clone the Repository
 
 ```bash
-  git clone https://github.com/xTyranT/inception.git
+  git clone https://github.com/xTyranT/Services-Infrastructure.git
 ```
 ### Change Directory
 ```bash
-  cd inception
+  cd Services-Infrastructure
 ```
 ### Start the Project
 ```bash
